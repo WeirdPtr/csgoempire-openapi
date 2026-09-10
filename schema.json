@@ -1,0 +1,2176 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "csgoempire-api",
+    "version": "1.0"
+  },
+  "servers": [
+    {
+      "url": "https://csgoempire.com/api/v2/"
+    }
+  ],
+  "paths": {
+    "/trading/automation/access-token": {
+      "delete": {
+        "summary": "Delete Token",
+        "description": "Deletes the saved Steam Access Token from your account. Use this endpoint if you want to disable trading automation. Once the token is removed, all trading automation features will be turned off for your account (since the system no longer has access to check your trades on Steam).",
+        "operationId": "delete-token",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "default": true,
+                      "example": true
+                    }
+                  }
+                },
+                "examples": {
+                  "Result": {
+                    "value": {
+                      "success": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "invalid_api_token": {
+                      "type": "boolean",
+                      "default": true,
+                      "example": true
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true,
+                      "example": false
+                    }
+                  }
+                },
+                "examples": {
+                  "Result": {
+                    "value": {
+                      "success": false,
+                      "invalid_api_token": true
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/trading/automation/check-trades": {
+      "post": {
+        "summary": "Check Trades",
+        "description": "Manually triggers the trading automation system to check any of your pending trades (both deposits and withdrawals) and attempt to auto-resolve them. We already check this periodically. Your account must have an active token for this to work.",
+        "operationId": "check-trades",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "Result": {
+                    "value": {}
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "backtrace": {
+                      "type": "object",
+                      "properties": {
+                        "bypass": {
+                          "type": "boolean",
+                          "default": true,
+                          "example": true
+                        },
+                        "debug_message": {
+                          "type": "string",
+                          "example": "Trade automation is not enabled on your account"
+                        },
+                        "exception": {
+                          "type": "string",
+                          "example": "App\\Exceptions\\HttpException"
+                        },
+                        "file": {
+                          "type": "string",
+                          "example": "/var/csgoempire/laravel/app/Http/Controllers/Trading/TradingAutomationController.php"
+                        },
+                        "line": {
+                          "type": "integer",
+                          "default": 0,
+                          "example": 84
+                        },
+                        "trace": {
+                          "type": "string",
+                          "example": "#0 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Routing/Controller.php(54): App\\Http\\Controllers\\Trading\\TradingAutomationController->postCheckTrades(Object(App\\Trading\\Services\\TradingAutomationService))\n#1 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php(43): Illuminate\\Routing\\Controller->callAction('postCheckTrades', Array)\n#2 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Routing/Route.php(260): Illuminate\\Routing\\ControllerDispatcher->dispatch(Object(Illuminate\\Routing\\Route), Object(App\\Http\\Controllers\\Trading\\TradingAutomationController), 'postCheckTrades')\n#3 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Routing/Route.php(205): Illuminate\\Routing\\Route->runController()\n#4 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(806): Illuminate\\Routing\\Route->run()\n#5 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Illuminate\\Routing\\Router->Illuminate\\Routing\\{closure}(Object(App\\Http\\Request))\n#6 /var/csgoempire/laravel/app/Http/Controllers/APIController.php(52): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#7 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(165): App\\Http\\Controllers\\APIController->App\\Http\\Controllers\\{closure}(Object(App\\Http\\Request), Object(Closure))\n#8 /var/csgoempire/laravel/app/FeatureToggle/FeatureMiddleware.php(45): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#9 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\FeatureToggle\\FeatureMiddleware->handle(Object(App\\Http\\Request), Object(Closure), 'trading_automat...')\n#10 /var/csgoempire/laravel/app/Http/Middleware/RequiresSteamLinkMiddleware.php(41): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#11 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\Http\\Middleware\\RequiresSteamLinkMiddleware->handle(Object(App\\Http\\Request), Object(Closure))\n#12 /var/csgoempire/laravel/app/Http/Middleware/RequiresSteamLinkMiddleware.php(41): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#13 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\Http\\Middleware\\RequiresSteamLinkMiddleware->handle(Object(App\\Http\\Request), Object(Closure), 'GET')\n#14 /var/csgoempire/laravel/app/FeatureToggle/FeatureMiddleware.php(45): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#15 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\FeatureToggle\\FeatureMiddleware->handle(Object(App\\Http\\Request), Object(Closure), 'general_p2p_tra...')\n#16 /var/csgoempire/laravel/app/Http/Middleware/ForgetRecordModificationStateMiddleware.php(27): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#17 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\Http\\Middleware\\ForgetRecordModificationStateMiddleware->handle(Object(App\\Http\\Request), Object(Closure))\n#18 /var/csgoempire/laravel/app/Http/Middleware/CheckUserAccountIsSetupMiddleware.php(46): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#19 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\Http\\Middleware\\CheckUserAccountIsSetupMiddleware->handle(Object(App\\Http\\Request), Object(Closure))\n#20 /var/csgoempire/laravel/app/Http/Middleware/AuthValidatorMiddleware.php(196): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#21 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\Http\\Middleware\\AuthValidatorMiddleware->handle(Object(App\\Http\\Request), Object(Closure))\n#22 /var/csgoempire/laravel/app/Http/Middleware/BearerAuthMiddleware.php(67): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#23 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\Http\\Middleware\\BearerAuthMiddleware->handle(Object(App\\Http\\Request), Object(Closure))\n#24 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php(50): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#25 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate\\Routing\\Middleware\\SubstituteBindings->handle(Object(App\\Http\\Request), Object(Closure))\n#26 [internal function]: Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#27 /var/csgoempire/laravel/app/Http/Middleware/NormalAuthMiddleware.php(342): call_user_func(Object(Closure), Object(App\\Http\\Request))\n#28 /var/csgoempire/laravel/app/Http/Middleware/NormalAuthMiddleware.php(84): App\\Http\\Middleware\\NormalAuthMiddleware->next()\n#29 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\Http\\Middleware\\NormalAuthMiddleware->handle(Object(App\\Http\\Request), Object(Closure))\n#30 /var/csgoempire/laravel/app/Http/Middleware/MultiSiteMiddleware.php(42): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#31 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\Http\\Middleware\\MultiSiteMiddleware->handle(Object(App\\Http\\Request), Object(Closure))\n#32 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php(37): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#33 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse->handle(Object(App\\Http\\Request), Object(Closure))\n#34 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#35 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(807): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))\n#36 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(784): Illuminate\\Routing\\Router->runRouteWithinStack(Object(Illuminate\\Routing\\Route), Object(App\\Http\\Request))\n#37 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(748): Illuminate\\Routing\\Router->runRoute(Object(App\\Http\\Request), Object(Illuminate\\Routing\\Route))\n#38 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(737): Illuminate\\Routing\\Router->dispatchToRoute(Object(App\\Http\\Request))\n#39 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(200): Illuminate\\Routing\\Router->dispatch(Object(App\\Http\\Request))\n#40 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Illuminate\\Foundation\\Http\\Kernel->Illuminate\\Foundation\\Http\\{closure}(Object(App\\Http\\Request))\n#41 /var/csgoempire/laravel/app/Http/Middleware/AutomatedTrafficAPM.php(30): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#42 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\Http\\Middleware\\AutomatedTrafficAPM->handle(Object(App\\Http\\Request), Object(Closure))\n#43 /var/csgoempire/laravel/app/Http/Middleware/AddEnvironmentHeader.php(13): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#44 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\Http\\Middleware\\AddEnvironmentHeader->handle(Object(App\\Http\\Request), Object(Closure))\n#45 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(99): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#46 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance->handle(Object(App\\Http\\Request), Object(Closure))\n#47 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#48 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(175): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))\n#49 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(144): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter(Object(App\\Http\\Request))\n#50 /var/csgoempire/laravel/app/Http/Kernel.php(159): Illuminate\\Foundation\\Http\\Kernel->handle(Object(App\\Http\\Request))\n#51 /var/csgoempire/laravel/public/index.php(28): App\\Http\\Kernel->handle(Object(App\\Http\\Request))\n#52 {main}"
+                        }
+                      }
+                    },
+                    "message": {
+                      "type": "string",
+                      "example": "Trade automation is not enabled on your account"
+                    },
+                    "message_localized": {
+                      "type": "object",
+                      "properties": {
+                        "key": {
+                          "type": "string",
+                          "example": "modals.trade_automation.errors.automation_disabled"
+                        }
+                      }
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true,
+                      "example": false
+                    }
+                  }
+                },
+                "examples": {
+                  "Result": {
+                    "value": {
+                      "success": false,
+                      "message": "Trade automation is not enabled on your account",
+                      "message_localized": {
+                        "key": "modals.trade_automation.errors.automation_disabled"
+                      },
+                      "backtrace": {
+                        "bypass": true,
+                        "exception": "App\\Exceptions\\HttpException",
+                        "file": "/var/csgoempire/laravel/app/Http/Controllers/Trading/TradingAutomationController.php",
+                        "line": 84,
+                        "debug_message": "Trade automation is not enabled on your account",
+                        "trace": "#0 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Routing/Controller.php(54): App\\Http\\Controllers\\Trading\\TradingAutomationController->postCheckTrades(Object(App\\Trading\\Services\\TradingAutomationService))\n#1 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Routing/ControllerDispatcher.php(43): Illuminate\\Routing\\Controller->callAction('postCheckTrades', Array)\n#2 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Routing/Route.php(260): Illuminate\\Routing\\ControllerDispatcher->dispatch(Object(Illuminate\\Routing\\Route), Object(App\\Http\\Controllers\\Trading\\TradingAutomationController), 'postCheckTrades')\n#3 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Routing/Route.php(205): Illuminate\\Routing\\Route->runController()\n#4 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(806): Illuminate\\Routing\\Route->run()\n#5 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Illuminate\\Routing\\Router->Illuminate\\Routing\\{closure}(Object(App\\Http\\Request))\n#6 /var/csgoempire/laravel/app/Http/Controllers/APIController.php(52): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#7 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(165): App\\Http\\Controllers\\APIController->App\\Http\\Controllers\\{closure}(Object(App\\Http\\Request), Object(Closure))\n#8 /var/csgoempire/laravel/app/FeatureToggle/FeatureMiddleware.php(45): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#9 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\FeatureToggle\\FeatureMiddleware->handle(Object(App\\Http\\Request), Object(Closure), 'trading_automat...')\n#10 /var/csgoempire/laravel/app/Http/Middleware/RequiresSteamLinkMiddleware.php(41): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#11 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\Http\\Middleware\\RequiresSteamLinkMiddleware->handle(Object(App\\Http\\Request), Object(Closure))\n#12 /var/csgoempire/laravel/app/Http/Middleware/RequiresSteamLinkMiddleware.php(41): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#13 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\Http\\Middleware\\RequiresSteamLinkMiddleware->handle(Object(App\\Http\\Request), Object(Closure), 'GET')\n#14 /var/csgoempire/laravel/app/FeatureToggle/FeatureMiddleware.php(45): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#15 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\FeatureToggle\\FeatureMiddleware->handle(Object(App\\Http\\Request), Object(Closure), 'general_p2p_tra...')\n#16 /var/csgoempire/laravel/app/Http/Middleware/ForgetRecordModificationStateMiddleware.php(27): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#17 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\Http\\Middleware\\ForgetRecordModificationStateMiddleware->handle(Object(App\\Http\\Request), Object(Closure))\n#18 /var/csgoempire/laravel/app/Http/Middleware/CheckUserAccountIsSetupMiddleware.php(46): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#19 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\Http\\Middleware\\CheckUserAccountIsSetupMiddleware->handle(Object(App\\Http\\Request), Object(Closure))\n#20 /var/csgoempire/laravel/app/Http/Middleware/AuthValidatorMiddleware.php(196): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#21 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\Http\\Middleware\\AuthValidatorMiddleware->handle(Object(App\\Http\\Request), Object(Closure))\n#22 /var/csgoempire/laravel/app/Http/Middleware/BearerAuthMiddleware.php(67): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#23 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\Http\\Middleware\\BearerAuthMiddleware->handle(Object(App\\Http\\Request), Object(Closure))\n#24 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Routing/Middleware/SubstituteBindings.php(50): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#25 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate\\Routing\\Middleware\\SubstituteBindings->handle(Object(App\\Http\\Request), Object(Closure))\n#26 [internal function]: Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#27 /var/csgoempire/laravel/app/Http/Middleware/NormalAuthMiddleware.php(342): call_user_func(Object(Closure), Object(App\\Http\\Request))\n#28 /var/csgoempire/laravel/app/Http/Middleware/NormalAuthMiddleware.php(84): App\\Http\\Middleware\\NormalAuthMiddleware->next()\n#29 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\Http\\Middleware\\NormalAuthMiddleware->handle(Object(App\\Http\\Request), Object(Closure))\n#30 /var/csgoempire/laravel/app/Http/Middleware/MultiSiteMiddleware.php(42): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#31 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\Http\\Middleware\\MultiSiteMiddleware->handle(Object(App\\Http\\Request), Object(Closure))\n#32 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Cookie/Middleware/AddQueuedCookiesToResponse.php(37): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#33 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate\\Cookie\\Middleware\\AddQueuedCookiesToResponse->handle(Object(App\\Http\\Request), Object(Closure))\n#34 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#35 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(807): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))\n#36 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(784): Illuminate\\Routing\\Router->runRouteWithinStack(Object(Illuminate\\Routing\\Route), Object(App\\Http\\Request))\n#37 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(748): Illuminate\\Routing\\Router->runRoute(Object(App\\Http\\Request), Object(Illuminate\\Routing\\Route))\n#38 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Routing/Router.php(737): Illuminate\\Routing\\Router->dispatchToRoute(Object(App\\Http\\Request))\n#39 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(200): Illuminate\\Routing\\Router->dispatch(Object(App\\Http\\Request))\n#40 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(144): Illuminate\\Foundation\\Http\\Kernel->Illuminate\\Foundation\\Http\\{closure}(Object(App\\Http\\Request))\n#41 /var/csgoempire/laravel/app/Http/Middleware/AutomatedTrafficAPM.php(30): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#42 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\Http\\Middleware\\AutomatedTrafficAPM->handle(Object(App\\Http\\Request), Object(Closure))\n#43 /var/csgoempire/laravel/app/Http/Middleware/AddEnvironmentHeader.php(13): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#44 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): App\\Http\\Middleware\\AddEnvironmentHeader->handle(Object(App\\Http\\Request), Object(Closure))\n#45 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Middleware/PreventRequestsDuringMaintenance.php(99): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#46 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(183): Illuminate\\Foundation\\Http\\Middleware\\PreventRequestsDuringMaintenance->handle(Object(App\\Http\\Request), Object(Closure))\n#47 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Pipeline/Pipeline.php(119): Illuminate\\Pipeline\\Pipeline->Illuminate\\Pipeline\\{closure}(Object(App\\Http\\Request))\n#48 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(175): Illuminate\\Pipeline\\Pipeline->then(Object(Closure))\n#49 /var/csgoempire/laravel/vendor/laravel/framework/src/Illuminate/Foundation/Http/Kernel.php(144): Illuminate\\Foundation\\Http\\Kernel->sendRequestThroughRouter(Object(App\\Http\\Request))\n#50 /var/csgoempire/laravel/app/Http/Kernel.php(159): Illuminate\\Foundation\\Http\\Kernel->handle(Object(App\\Http\\Request))\n#51 /var/csgoempire/laravel/public/index.php(28): App\\Http\\Kernel->handle(Object(App\\Http\\Request))\n#52 {main}"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/trading/automation/status": {
+      "get": {
+        "summary": "Get Status",
+        "description": "Use this endpoint to check whether your account has the automation feature active.",
+        "operationId": "get-status",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "access_token_expires_at": {
+                          "type": "string",
+                          "example": "2025-01-10T03:37:29.000000Z"
+                        },
+                        "automation_enabled_read_only": {
+                          "type": "boolean",
+                          "default": true,
+                          "example": true
+                        },
+                        "has_access_token": {
+                          "type": "boolean",
+                          "default": true,
+                          "example": true
+                        },
+                        "has_api_key": {
+                          "type": "boolean",
+                          "default": true,
+                          "example": false
+                        },
+                        "steam_id": {
+                          "type": "string",
+                          "example": "76561118883215332"
+                        },
+                        "trade_url": {
+                          "type": "string",
+                          "example": "https://steamcommunity.com/tradeoffer/new/?partner=1033332211&token=So-S31aK"
+                        }
+                      }
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true,
+                      "example": true
+                    }
+                  }
+                },
+                "examples": {
+                  "Result": {
+                    "value": {
+                      "success": true,
+                      "data": {
+                        "steam_id": "76561118883215332",
+                        "trade_url": "https://steamcommunity.com/tradeoffer/new/?partner=1033332211&token=So-S31aK",
+                        "has_api_key": false,
+                        "has_access_token": true,
+                        "access_token_expires_at": "2025-01-10T03:37:29.000000Z",
+                        "automation_enabled_read_only": true
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "Result": {
+                    "value": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/trading/block-list": {
+      "get": {
+        "summary": "View All Blocked Users",
+        "description": "Used to get a list of all currently blocked users.",
+        "operationId": "view-all-blocked-users",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "blocked_user_id": {
+                        "type": "integer",
+                        "default": 0,
+                        "example": 76561197960287940
+                      },
+                      "blocker_user_id": {
+                        "type": "integer",
+                        "default": 0,
+                        "example": 76561198106192110
+                      },
+                      "created_at": {
+                        "type": "string",
+                        "example": "2022-02-15 11:57:08"
+                      },
+                      "id": {
+                        "type": "integer",
+                        "default": 0,
+                        "example": 1
+                      },
+                      "updated_at": {
+                        "type": "string",
+                        "example": "2022-02-15 11:57:08"
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "Result": {
+                    "value": [
+                      {
+                        "id": 1,
+                        "blocker_user_id": 76561198106192114,
+                        "blocked_user_id": 76561197960287930,
+                        "created_at": "2022-02-15 11:57:08",
+                        "updated_at": "2022-02-15 11:57:08"
+                      }
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "Result": {
+                    "value": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/trading/block-list/{steam_id}": {
+      "delete": {
+        "summary": "Unblocking a User",
+        "description": "Used to unblock a user, allowing them to trade with you, and you with them.",
+        "operationId": "unblocking-a-user",
+        "parameters": [
+          {
+            "name": "steam_id",
+            "in": "path",
+            "description": "The user's Steam ID 64.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n    \"success\": true,\n}"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "Result": {
+                    "value": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/trading/deposit": {
+      "post": {
+        "summary": "Create Deposit",
+        "description": "List item(s) for sale.",
+        "operationId": "create-deposit",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "items": {
+                    "type": "string",
+                    "format": "json",
+                    "description": "Required array with array elements [id: itemId, coin_value: int] or [asset_id: int, coin_value: int]",
+                    "default": ""
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "default": true,
+                      "example": true
+                    }
+                  }
+                },
+                "examples": {
+                  "Result": {
+                    "value": {
+                      "success": true,
+                      "data": [
+                        {
+                          "item_id": 4242007012,
+                          "tracking_code": "01K3H28BXWM3HM5MDACGEKETN0",
+                          "tracking_expires_at": 1758298962,
+                          "asset_id": 45030133221
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "Result": {
+                    "value": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/trading/deposit/bulk": {
+      "patch": {
+        "description": "",
+        "operationId": "patch_tradingdepositbulk",
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "items"
+                ],
+                "properties": {
+                  "items": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "required": [
+                        "id",
+                        "coin_value"
+                      ],
+                      "properties": {
+                        "coin_value": {
+                          "type": "number",
+                          "description": "In coincents, so 1 coin = 100 coincents"
+                        },
+                        "id": {
+                          "type": "number",
+                          "description": "Can be deposit id/asset id"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "string"
+                    },
+                    "success": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "OK": {
+                    "summary": "OK",
+                    "value": {
+                      "success": true,
+                      "data": {
+                        "summary": {
+                          "attempted": 5,
+                          "updated": 1,
+                          "unchanged": 3,
+                          "failed": 1
+                        },
+                        "updated": [
+                          {
+                            "index": 3,
+                            "id": 10159,
+                            "old_price": 5333123,
+                            "new_price": 5024
+                          }
+                        ],
+                        "unchanged": [
+                          {
+                            "index": 0,
+                            "id": 10156
+                          },
+                          {
+                            "index": 1,
+                            "id": 10157
+                          },
+                          {
+                            "index": 2,
+                            "id": 8896068050
+                          }
+                        ],
+                        "failed": [
+                          {
+                            "index": 4,
+                            "id": 111,
+                            "error": "Deposit not found"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/trading/deposit/cancel": {
+      "post": {
+        "summary": "Cancel Multiple Deposits",
+        "description": "Cancels multiple processing deposits. Once a bid has been placed items are no longer eligible to be cancelled.",
+        "operationId": "cancel-multiple-deposits",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "ids": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "format": "int32"
+                    },
+                    "description": "Array of deposit ids."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "10001": {
+                          "type": "object",
+                          "properties": {
+                            "message": {
+                              "type": "string",
+                              "example": "You don't have a cancellable deposit."
+                            },
+                            "success": {
+                              "type": "boolean",
+                              "default": true,
+                              "example": false
+                            }
+                          }
+                        },
+                        "10002": {
+                          "type": "object",
+                          "properties": {
+                            "success": {
+                              "type": "boolean",
+                              "default": true,
+                              "example": true
+                            }
+                          }
+                        },
+                        "10003": {
+                          "type": "object",
+                          "properties": {
+                            "success": {
+                              "type": "boolean",
+                              "default": true,
+                              "example": true
+                            }
+                          }
+                        },
+                        "10004": {
+                          "type": "object",
+                          "properties": {
+                            "success": {
+                              "type": "boolean",
+                              "default": true,
+                              "example": true
+                            }
+                          }
+                        },
+                        "10005": {
+                          "type": "object",
+                          "properties": {
+                            "message": {
+                              "type": "string",
+                              "example": "You don't have a cancellable deposit."
+                            },
+                            "success": {
+                              "type": "boolean",
+                              "default": true,
+                              "example": false
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true,
+                      "example": true
+                    }
+                  }
+                },
+                "examples": {
+                  "Result": {
+                    "value": {
+                      "success": true,
+                      "data": {
+                        "10001": {
+                          "success": false,
+                          "message": "You don't have a cancellable deposit."
+                        },
+                        "10002": {
+                          "success": true
+                        },
+                        "10003": {
+                          "success": true
+                        },
+                        "10004": {
+                          "success": true
+                        },
+                        "10005": {
+                          "success": false,
+                          "message": "You don't have a cancellable deposit."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "Result": {
+                    "value": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/trading/deposit/status/{trackingCode}": {
+      "get": {
+        "description": "",
+        "operationId": "get_tradingdepositstatus{trackingCode}",
+        "parameters": [
+          {
+            "name": "trackingCode",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "created_at": {
+                          "type": "integer"
+                        },
+                        "deposit_id": {
+                          "type": "integer"
+                        },
+                        "error": {
+                          "type": "string"
+                        },
+                        "item_id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string"
+                        },
+                        "tracking_expires_at": {
+                          "type": "integer"
+                        },
+                        "updated_at": {
+                          "type": "integer"
+                        },
+                        "user_id": {
+                          "type": "integer"
+                        }
+                      }
+                    }
+                  }
+                },
+                "examples": {
+                  "": {
+                    "value": {
+                      "success": true,
+                      "data": {
+                        "user_id": 9181092,
+                        "item_id": 4244017062,
+                        "status": "completed",
+                        "error": null,
+                        "created_at": 1758288162,
+                        "updated_at": 1758288166,
+                        "tracking_expires_at": 1758298962,
+                        "deposit_id": 328094591
+                      }
+                    }
+                  },
+                  " Success": {
+                    "summary": " Success",
+                    "value": {
+                      "success": true,
+                      "data": {
+                        "user_id": 9181092,
+                        "item_id": 4244017062,
+                        "status": "completed",
+                        "error": null,
+                        "created_at": 1758288162,
+                        "updated_at": 1758288166,
+                        "tracking_expires_at": 1758298962,
+                        "deposit_id": 328094591
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/trading/deposit/{depositIdOrAssetId}": {
+      "patch": {
+        "description": "",
+        "operationId": "patch_tradingdeposit{depositIdOrAssetId}",
+        "parameters": [
+          {
+            "name": "depositIdOrAssetId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "number"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "coin_value"
+                ],
+                "properties": {
+                  "coin_value": {
+                    "type": "number",
+                    "description": "This is in coincents, so 1 coin = 100 coincents"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "OK": {
+                    "summary": "OK",
+                    "value": {
+                      "success": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "success": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "examples": {
+                  "": {
+                    "value": {
+                      "success": true
+                    }
+                  },
+                  "Failure": {
+                    "summary": "Failure",
+                    "value": "{\n    \"success\": false,\n    \"message\": \"Invalid custom price set for Sticker | FURIA (Holo) | Katowice 2019. (min: -99%, max: 100000%) from 6631\",\n    \"message_localized\": {\n        \"key\": \"app.exceptions.tradeexception.invalid_custom_price_set_for_sticker_furia_holo_katowice_2019_min_99_max_100000_from_6631\"\n    },\n    \"data\": {\n        \"error_key\": null\n    },\n}"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/trading/deposit/{deposit_id}/cancel": {
+      "post": {
+        "summary": "Cancel Deposit",
+        "description": "Cancels processing deposit without any bids. Once a bid has been placed items are no longer eligible to be cancelled.",
+        "operationId": "cancel-deposit",
+        "parameters": [
+          {
+            "name": "deposit_id",
+            "in": "path",
+            "description": "Deposit ID of the trade in question.",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean",
+                      "default": true,
+                      "example": true
+                    }
+                  }
+                },
+                "examples": {
+                  "Result": {
+                    "value": {
+                      "success": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "Result": {
+                    "value": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/trading/deposit/{deposit_id}/sell": {
+      "post": {
+        "summary": "Sell Now",
+        "description": "Sell an item immediately once it has at least 1 bid. Only works for auction sales.",
+        "operationId": "sell-now",
+        "parameters": [
+          {
+            "name": "deposit_id",
+            "in": "path",
+            "description": "Deposit ID of the trade in question.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "auction_data": {
+                      "type": "object",
+                      "properties": {
+                        "app_id": {
+                          "type": "integer",
+                          "default": 0,
+                          "example": 730
+                        },
+                        "auction_ends_at": {
+                          "type": "integer",
+                          "default": 0,
+                          "example": 1638273900
+                        },
+                        "auction_highest_bid": {
+                          "type": "integer",
+                          "default": 0,
+                          "example": 54
+                        },
+                        "auction_highest_bidder": {
+                          "type": "integer",
+                          "default": 0,
+                          "example": 2700170
+                        },
+                        "auction_number_of_bids": {
+                          "type": "integer",
+                          "default": 0,
+                          "example": 2
+                        },
+                        "id": {
+                          "type": "integer",
+                          "default": 0,
+                          "example": 28393316
+                        }
+                      }
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true,
+                      "example": true
+                    }
+                  }
+                },
+                "examples": {
+                  "Result": {
+                    "value": {
+                      "success": true,
+                      "auction_data": {
+                        "id": 28393316,
+                        "app_id": 730,
+                        "auction_highest_bid": 54,
+                        "auction_highest_bidder": 2700170,
+                        "auction_number_of_bids": 2,
+                        "auction_ends_at": 1638273900
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "Result": {
+                    "value": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/trading/deposit/{deposit_id}/sent": {
+      "post": {
+        "summary": "Mark as sent",
+        "description": "Mark an item as sent after having sent it on Steam.",
+        "operationId": "mark-as-sent",
+        "parameters": [
+          {
+            "name": "deposit_id",
+            "in": "path",
+            "description": "Deposit ID of the trade in question.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "    {\n        \"success\": true,\n    }"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "Result": {
+                    "value": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/trading/deposit/{deposit_id}/withdraw": {
+      "post": {
+        "summary": "Create Withdrawal",
+        "description": "Withdraw item directly if the auction has expired without being won.",
+        "operationId": "create-withdrawal",
+        "parameters": [
+          {
+            "name": "deposit_id",
+            "in": "path",
+            "description": "Deposit ID of the trade in question.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "coin_value": {
+                    "type": "integer",
+                    "format": "int32",
+                    "description": "The item price."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "integer",
+                          "default": 0,
+                          "example": 26124023
+                        },
+                        "tradeoffer_id": {
+                          "type": "integer",
+                          "default": 0,
+                          "example": 298883412
+                        }
+                      }
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true,
+                      "example": true
+                    }
+                  }
+                },
+                "examples": {
+                  "Result": {
+                    "value": {
+                      "success": true,
+                      "data": {
+                        "id": 26124023,
+                        "tradeoffer_id": 298883412
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "Result": {
+                    "value": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/trading/deposit/{tradeoffer_id}/dispute": {
+      "post": {
+        "summary": "Dispute trade",
+        "description": "Disputes a trade in case the seller did not send you the item, but marked the trade as 'sent'. Please do your best to keep false disputes at a minimum, otherwise we might impose restrictions.",
+        "operationId": "dispute-trade",
+        "parameters": [
+          {
+            "name": "tradeoffer_id",
+            "in": "path",
+            "description": "The trade offer ID of the trade in question, collected from the withdrawal endpoint response.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "    {\n        \"success\": true,\n    }"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "Result": {
+                    "value": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/trading/deposit/{tradeoffer_id}/received": {
+      "post": {
+        "summary": "Mark as received",
+        "description": "Mark an item as received after accepting the trade on Steam. This endpoint can also be used to complete a dispute after it has been opened.",
+        "operationId": "mark-as-received",
+        "parameters": [
+          {
+            "name": "tradeoffer_id",
+            "in": "path",
+            "description": "The trade offer ID of the trade in question, collected from the withdrawal endpoint response.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "    {\n        \"success\": true,\n    }"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "Result": {
+                    "value": {}
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/trading/user/auctions": {
+      "get": {
+        "summary": "Get Active Auctions",
+        "description": "Returns an array of all auctions currently being bid on by this account.",
+        "operationId": "get-active-auctions",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "active_auctions": {
+                      "type": "array"
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true,
+                      "example": true
+                    }
+                  }
+                },
+                "examples": {
+                  "Result": {
+                    "value": {
+                      "success": true,
+                      "active_auctions": [
+                        {
+                          "auction_ends_at": 1666083221,
+                          "auction_highest_bid": 227,
+                          "auction_highest_bidder": 303119,
+                          "auction_number_of_bids": 1,
+                          "custom_price_percentage": 0,
+                          "icon_url": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXX7gNTPcUmqBwTTR7SQb37g5vWCwlxdFEC5uyncgZi0vGQJWwQudm0xtTexaD2ZOmClyVB5sL8h7mCHA",
+                          "is_commodity": true,
+                          "market_name": "Name Tag",
+                          "market_value": 227,
+                          "name_color": "D2D2D2",
+                          "preview_id": null,
+                          "price_is_unreliable": true,
+                          "stickers": [],
+                          "wear": null,
+                          "published_at": "2022-10-18T08:51:02.803761Z",
+                          "id": 11204,
+                          "depositor_stats": {
+                            "delivery_rate_recent": 0.6,
+                            "delivery_rate_long": 0.7567567567567568,
+                            "delivery_time_minutes_recent": 7,
+                            "delivery_time_minutes_long": 7,
+                            "steam_level_min_range": 5,
+                            "steam_level_max_range": 10,
+                            "user_has_trade_notifications_enabled": false,
+                            "user_is_online": null
+                          },
+                          "above_recommended_price": -5
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "Result": {
+                    "value": {}
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "429",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": ""
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/trading/user/inventory": {
+      "get": {
+        "summary": "Get CS2 Inventory",
+        "description": "Fetch your inventory from steam and caches it to the database for 1 hour.",
+        "operationId": "get-cs2-inventory",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "invalid": {
+                    "type": "string",
+                    "description": "Filters invalid items, defaults to no filtering.",
+                    "default": "yes"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "allowUpdate": {
+                      "type": "boolean",
+                      "default": true,
+                      "example": true
+                    },
+                    "data": {
+                      "type": "array"
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true,
+                      "example": true
+                    },
+                    "updatedAt": {
+                      "type": "integer",
+                      "default": 0,
+                      "example": 1666082810
+                    }
+                  }
+                },
+                "examples": {
+                  "Result": {
+                    "value": {
+                      "success": true,
+                      "updatedAt": 1666082810,
+                      "allowUpdate": true,
+                      "data": [
+                        {
+                          "asset_id": 26876810352,
+                          "created_at": "2022-10-14 13:54:35",
+                          "custom_price_percentage": null,
+                          "full_position": 83,
+                          "icon_url": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpovbSsLQJf3qr3czxb49KzgL-DjsjwN6vQglRd4cJ5nqeQ89mk2VHg_UpkYjj0JdLGdAFvNAvS81G6kLjq1pHtv5SdnHdhuCYq-z-DyHWIya-0",
+                          "id": 50755,
+                          "invalid": "This item is currently in an active deposit.",
+                          "is_commodity": false,
+                          "market_name": "★ M9 Bayonet | Forest DDPAT (Factory New)",
+                          "market_value": 48882,
+                          "name_color": "8650AC",
+                          "position": null,
+                          "preview_id": "43246cdca7fe",
+                          "price_is_unreliable": 1,
+                          "stickers": [],
+                          "tradable": true,
+                          "tradelock": false,
+                          "updated_at": "2022-10-18 08:46:45",
+                          "wear": 0.064
+                        },
+                        {
+                          "asset_id": 27299195480,
+                          "created_at": "2022-10-14 13:54:34",
+                          "custom_price_percentage": null,
+                          "full_position": 27,
+                          "icon_url": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou7uifDhnwMzFcDoV09ajh5SClPLLP7LWnn8f7sZ1ib6S9I6i3w21qUNlYDymI9KcclI3YAvRr1Ltwujm18TvtMnPzGwj5Hdb1VS4mQ",
+                          "id": 50696,
+                          "is_commodity": false,
+                          "market_name": "StatTrak™ MAG-7 | Justice (Factory New)",
+                          "market_value": 3267,
+                          "name_color": "CF6A32",
+                          "position": 2,
+                          "preview_id": null,
+                          "price_is_unreliable": 0,
+                          "stickers": [
+                            {
+                              "sticker_id": 3453,
+                              "wear": null,
+                              "name": "Legendary Eagle Master (Holo)",
+                              "image": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXQ9QVcJY8gulROR0XcS-O_2NrDbF51NRdCur_qJwJt7PvHfTJ94N2kk4XFw_OhZbmAxWhT7Zcp3u2TpIqmilDl8hZsMjylJoHEIAA9ZQ2B-1W-xfCv28G5r0_B7Q"
+                            }
+                          ],
+                          "tradable": true,
+                          "tradelock": false,
+                          "updated_at": "2022-10-18 08:46:45",
+                          "wear": 0.068
+                        }
+                      ]
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "Result": {
+                    "value": {}
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/trading/user/settings": {
+      "post": {
+        "summary": "Settings",
+        "description": "Used to update your trade URL or the marketplace privacy protection level.",
+        "operationId": "settings",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "marketplace_privacy_protection_level": {
+                    "type": "string",
+                    "description": "Use 'base' or 'strict'",
+                    "default": "base"
+                  },
+                  "trade_url": {
+                    "type": "string",
+                    "description": "full_trade_url_here"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": "{\n  success: true,\n  escrow_seconds: 0,\n  marketplace_privacy_protection_level: 'base'\n}"
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "Result": {
+                    "value": {}
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "429",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": ""
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/trading/user/trade/{depositId}/{type}": {
+      "get": {
+        "description": "",
+        "operationId": "get_apitradingusertrade{depositId}{type}",
+        "parameters": [
+          {
+            "name": "depositId",
+            "in": "path",
+            "description": "Can be either a deposit ID, a trade ID or a bid ID.",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "default": ""
+            }
+          },
+          {
+            "name": "type",
+            "in": "path",
+            "description": "Can be either of these: bid/deposit/withdrawal",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "default": ""
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "No trade found": {
+                    "value": "[\n  \"success\" => true\n  \"data\" => [\n    \"bid\" => null\n    \"deposit\" => null\n    \"withdrawal\" => null\n  ]\n]"
+                  },
+                  "No type provided": {
+                    "summary": "No type provided",
+                    "value": "[\n  \"success\" => true\n  \"data\" => [\n    \"bid\" => null\n    \"deposit\" => [\n      \"id\" => 10001,\n      \"total_value\" => 87846,\n      \"item_id\" => 30001\n       ...\n    ],\n    \"withdrawal\" => null\n  ]\n]"
+                  },
+                  "With type": {
+                    "summary": "With type",
+                    "value": "[\n  \"success\" => true\n  \"data\" => [\n    \"id\" => 10001\n    \"total_value\" => 24562\n    \"item_id\" => 30001\n     ...\n]"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "sec0": []
+          }
+        ]
+      }
+    },
+    "/trading/user/trades": {
+      "get": {
+        "summary": "Get Active Trades",
+        "description": "Returns an array of all items currently being deposited or withdrawn by this account. This does not include bids placed on active items until the auction ends.",
+        "operationId": "get-active-trades",
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "deposits": {
+                          "type": "array"
+                        },
+                        "withdrawals": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "created_at": {
+                                "type": "string",
+                                "example": "2025-02-25 08:08:08"
+                              },
+                              "id": {
+                                "type": "integer",
+                                "default": 0,
+                                "example": 26666321
+                              },
+                              "item": {
+                                "type": "object",
+                                "properties": {
+                                  "icon_url": {
+                                    "type": "string",
+                                    "example": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou7umeldf0Ob3fDxBvYyJnZOEmPn6MoTdn2xZ_Isj3bGS9oqh3wWy_kU5YWihI9WXcVJrYgvX-gO6w-fm1MS56JuaznowpGB8suVQiM7I"
+                                  },
+                                  "id": {
+                                    "type": "integer",
+                                    "default": 0,
+                                    "example": 221232898
+                                  },
+                                  "is_commodity": {
+                                    "type": "boolean",
+                                    "default": true,
+                                    "example": false
+                                  },
+                                  "market_name": {
+                                    "type": "string",
+                                    "example": "MAC-10 | Allure (Factory New)"
+                                  },
+                                  "market_value": {
+                                    "type": "integer",
+                                    "default": 0,
+                                    "example": 7
+                                  },
+                                  "name_color": {
+                                    "type": "string",
+                                    "example": "D2D2D2"
+                                  },
+                                  "price_is_unreliable": {
+                                    "type": "boolean",
+                                    "default": true,
+                                    "example": false
+                                  },
+                                  "suggested_price": {
+                                    "type": "integer",
+                                    "default": 0,
+                                    "example": 245
+                                  }
+                                }
+                              },
+                              "item_id": {
+                                "type": "integer",
+                                "default": 0,
+                                "example": 221232898
+                              },
+                              "metadata": {
+                                "type": "object",
+                                "properties": {
+                                  "auction_number_of_bids": {
+                                    "type": "integer",
+                                    "default": 0,
+                                    "example": 0
+                                  },
+                                  "expires_at": {
+                                    "type": "integer",
+                                    "default": 0,
+                                    "example": 1723212836
+                                  },
+                                  "item_validation": {
+                                    "type": "object",
+                                    "properties": {
+                                      "numWrongItemDetections": {
+                                        "type": "integer",
+                                        "default": 0,
+                                        "example": 0
+                                      },
+                                      "validItemDetected": {
+                                        "type": "boolean",
+                                        "default": true,
+                                        "example": false
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "status": {
+                                "type": "integer",
+                                "default": 0,
+                                "example": 3
+                              },
+                              "status_message": {
+                                "type": "string",
+                                "example": "Sending"
+                              },
+                              "total_value": {
+                                "type": "integer",
+                                "default": 0,
+                                "example": 245
+                              },
+                              "tradeoffer_id": {
+                                "type": "integer",
+                                "default": 0,
+                                "example": 221232898
+                              },
+                              "updated_at": {
+                                "type": "string",
+                                "example": "2025-02-25 09:09:09"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true,
+                      "example": true
+                    }
+                  }
+                },
+                "examples": {
+                  "Result": {
+                    "value": {
+                      "success": true,
+                      "data": {
+                        "deposits": [
+                          {
+                            "id": 291452362,
+                            "total_value": 499,
+                            "item_id": 4209852853,
+                            "item": {
+                              "app_id": 730,
+                              "context_id": 2,
+                              "type": "Mil-Spec Grade Sniper Rifle",
+                              "asset_id": 4189826749,
+                              "blue_percentage": null,
+                              "created_at": "2024-02-25 00:01:01",
+                              "fade_percentage": null,
+                              "full_position": 1,
+                              "icon_url": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpot621FA957P3dcjFH7c6Jh4uem_vnDKnUkmld_cBOhuDG_Zi7iQ2w_RU5Z26md4TDewQ-aF7ZrAC6wL-81pK9tZXPy3pr7yl243eLmgv3309_PudPMg",
+                              "id": 4209852853,
+                              "is_commodity": false,
+                              "market_name": "AWP | Acheron (Factory New)",
+                              "market_value": 499,
+                              "name_color": "D2D2D2",
+                              "position": null,
+                              "preview_id": "44f1edad452a",
+                              "price_is_unreliable": false,
+                              "stickers": [],
+                              "suggested_price": 281,
+                              "tradable": true,
+                              "trade_exists": false,
+                              "tradelock": false,
+                              "updated_at": "2025-02-26 00:00:01",
+                              "wear": 0.002
+                            },
+                            "status": 3,
+                            "status_message": "Sending",
+                            "tradeoffer_id": 22342312,
+                            "metadata": {
+                              "item_validation": {
+                                "numWrongItemDetections": 0,
+                                "validItemDetected": false
+                              },
+                              "expires_at": 1740426816,
+                              "trade_url": "https://steamcommunity.com/tradeoffer/new/?partner=100&token=hi",
+                              "item_inspected": true,
+                              "partner": {
+                                "steam_id": "76561198382602085",
+                                "steam_name": "exampleProfile",
+                                "avatar": "https://avatars.steamstatic.com/60d676610e6303f1f5fde66f307dbe753fc91221.jpg",
+                                "avatar_full": "https://avatars.steamstatic.com/60d676610e6303f1f5fde66f307dbe753fc91221_full.jpg",
+                                "profile_url": "https://steamcommunity.com/profiles/76561198382602085",
+                                "timecreated": 171313223,
+                                "steam_level": 10
+                              },
+                              "auction_number_of_bids": 0
+                            },
+                            "created_at": "2025-02-26 00:02:02",
+                            "updated_at": "2025-02-26 00:03:03",
+                            "suggested_price": 281
+                          },
+                          {
+                            "id": 292732111,
+                            "total_value": 433,
+                            "item_id": 4192817732,
+                            "item": {
+                              "asset_id": 40244332222,
+                              "blue_percentage": null,
+                              "created_at": "2024-02-25 00:35:35",
+                              "fade_percentage": null,
+                              "full_position": 18,
+                              "icon_url": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgposLOzLhRlxfbGTjpR09q_goW0hPLiNrXuk21E-8x-hNbN_Iv9nBqxqUc_Nmz1ddCTewI7ZQzUr1i6lL25h5S_uJqcyHNg7HYm4yncn0e1n1gSOfUnguoV",
+                              "id": 4192817732,
+                              "is_commodity": false,
+                              "market_name": "Five-SeveN | Boost Protocol (Minimal Wear)",
+                              "market_value": 4,
+                              "name_color": "D2D2D2",
+                              "position": null,
+                              "preview_id": "f64dfd621113",
+                              "price_is_unreliable": false,
+                              "stickers": [],
+                              "suggested_price": 443,
+                              "tradable": true,
+                              "trade_exists": false,
+                              "tradelock": false,
+                              "type": "Restricted Pistol",
+                              "updated_at": "2025-02-23 01:01:01",
+                              "wear": 0.123
+                            },
+                            "status": 5,
+                            "status_message": "Sent",
+                            "tradeoffer_id": 26421223,
+                            "metadata": {
+                              "item_validation": {
+                                "numWrongItemDetections": 0,
+                                "validItemDetected": true,
+                                "validatedAt": 1740142131
+                              },
+                              "expires_at": 1216543111,
+                              "trade_url": "https://steamcommunity.com/tradeoffer/new/?partner=100&token=hi",
+                              "item_inspected": true,
+                              "partner": {
+                                "steam_id": "76561198382602085",
+                                "steam_name": "exampleProfile",
+                                "avatar": "https://avatars.steamstatic.com/60d676610e6303f1f5fde66f307dbe753fc91221.jpg",
+                                "avatar_full": "https://avatars.steamstatic.com/60d676610e6303f1f5fde66f307dbe753fc91221_full.jpg",
+                                "profile_url": "https://steamcommunity.com/profiles/76561198382602085",
+                                "timecreated": 171313223,
+                                "steam_level": 10
+                              },
+                              "auction_number_of_bids": 0
+                            },
+                            "created_at": "2025-02-26 00:04:04",
+                            "updated_at": "2025-02-26 00:05:05",
+                            "suggested_price": 443
+                          }
+                        ],
+                        "withdrawals": [
+                          {
+                            "id": 26666321,
+                            "total_value": 245,
+                            "item_id": 221232898,
+                            "item": {
+                              "market_name": "MAC-10 | Allure (Factory New)",
+                              "market_value": 7,
+                              "icon_url": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpou7umeldf0Ob3fDxBvYyJnZOEmPn6MoTdn2xZ_Isj3bGS9oqh3wWy_kU5YWihI9WXcVJrYgvX-gO6w-fm1MS56JuaznowpGB8suVQiM7I",
+                              "id": 221232898,
+                              "is_commodity": false,
+                              "name_color": "D2D2D2",
+                              "price_is_unreliable": false,
+                              "suggested_price": 245
+                            },
+                            "status": 3,
+                            "status_message": "Sending",
+                            "tradeoffer_id": 221232898,
+                            "metadata": {
+                              "item_validation": {
+                                "numWrongItemDetections": 0,
+                                "validItemDetected": false
+                              },
+                              "expires_at": 1723212836,
+                              "auction_number_of_bids": 0
+                            },
+                            "created_at": "2025-02-25 08:08:08",
+                            "updated_at": "2025-02-25 09:09:09"
+                          },
+                          {
+                            "id": 26663211,
+                            "total_value": 197,
+                            "item_id": 292353222,
+                            "item": {
+                              "asset_id": 34537654123,
+                              "blue_percentage": null,
+                              "fade_percentage": null,
+                              "icon_url": "-9a81dlWLwJ2UUGcVs_nsVtzdOEdtWwKGZZLQHTxDZ7I56KU0Zwwo4NUX4oFJZEHLbXH5ApeO4YmlhxYQknCRvCo04DEVlxkKgpotaDyfgZf2-r3ZjhA_-O6nYeDg7n3a-jVkzsJ7Zcg0-qZoN_0i1DsqhVuZ2uhcYSUdQQ-MwzV_AO-wLvum9bi647NHLbz",
+                              "id": 292353222,
+                              "is_commodity": false,
+                              "market_name": "CZ75-Auto | Crimson Web (Minimal Wear)",
+                              "market_value": 3,
+                              "name_color": "D2D2D2",
+                              "preview_id": "fcfa605eb73a",
+                              "price_is_unreliable": false,
+                              "stickers": [],
+                              "suggested_price": 197,
+                              "type": "Mil-Spec Grade Pistol",
+                              "wear": 0.123,
+                              "marketplace_privacy_protection_level": "strict"
+                            },
+                            "status": 5,
+                            "status_message": "Sent",
+                            "tradeoffer_id": 292353222,
+                            "metadata": {
+                              "item_validation": {
+                                "numWrongItemDetections": 0,
+                                "validItemDetected": true,
+                                "validatedAt": 1721443222
+                              },
+                              "expires_at": 1716535722,
+                              "partner": {
+                                "steam_id": "76561198007254757",
+                                "steam_name": "example",
+                                "avatar": "https://avatars.steamstatic.com/fd2e54555a48835676ef5c5a51611d68eaede3cd.jpg",
+                                "avatar_full": "https://avatars.steamstatic.com/fd2e54555a48835676ef5c5a51611d68eaede3cd_full.jpg",
+                                "profile_url": "https://steamcommunity.com/profiles/76561198007254757",
+                                "timecreated": 171333333,
+                                "steam_level": 3
+                              },
+                              "auction_number_of_bids": 0
+                            },
+                            "created_at": "2025-02-25 10:10:10",
+                            "updated_at": "2025-02-25 11:11:11"
+                          }
+                        ]
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "Result": {
+                    "value": {}
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "429",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": ""
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    },
+    "/user/tip": {
+      "post": {
+        "summary": "Tipping",
+        "description": "Used to tip other accounts using their Steam/Empire ID. This requires 2FA codes alongside your API key in order to work.",
+        "operationId": "tipping",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "amount"
+                ],
+                "properties": {
+                  "amount": {
+                    "type": "string",
+                    "description": "The amount you want to tip in coin-cents (1 coin = 100 coincents)"
+                  },
+                  "steam_id": {
+                    "type": "string",
+                    "description": "The Steam ID of the user you want to tip. This field is mutually exclusive with user_id, so it's optional."
+                  },
+                  "user_id": {
+                    "type": "string",
+                    "description": "The ID of the user you want to tip. This field is mutually exclusive with steam_id, so it's optional."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "200",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "amount": {
+                          "type": "integer",
+                          "default": 0,
+                          "example": 100
+                        },
+                        "balance": {
+                          "type": "integer",
+                          "default": 0,
+                          "example": 499500
+                        },
+                        "user": {
+                          "type": "object",
+                          "properties": {
+                            "id": {
+                              "type": "integer",
+                              "default": 0,
+                              "example": 12345
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "success": {
+                      "type": "boolean",
+                      "default": true,
+                      "example": true
+                    }
+                  }
+                },
+                "examples": {
+                  "OK SteamID input": {
+                    "value": "{\n   \"success\":true,\n   \"data\":{\n      \"user\":{\n         \"steam_id\":\"76561198027000000\",\n         \"steam_name\":\"Example User\",\n         \"avatar\":\"https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars\n/2b/2be7018662abf5921bff4828ac18146802e3dc46.jpg\",\n         \"avatar_full\":\"https://steamcdn-a.akamaihd.net/steamcommunity/public/images/avatars\n/2b/2be7018662abf5921bff4828ac18146802e3dc46_full.jpg\",\n         \"profile_url\":\"http://steamcommunity.com/id/ExampleUser/\",\n         \"timecreated\":null,\n         \"steam_level\":null\n      },\n      \"amount\":100,\n      \"balance\":499500\n   }\n}"
+                  },
+                  "OK UserID Input": {
+                    "value": {
+                      "success": true,
+                      "data": {
+                        "user": {
+                          "id": 12345
+                        },
+                        "amount": 100,
+                        "balance": 499500
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "400",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object"
+                },
+                "examples": {
+                  "Result": {
+                    "value": {}
+                  }
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "429",
+            "content": {
+              "application/json": {
+                "examples": {
+                  "Result": {
+                    "value": ""
+                  }
+                }
+              }
+            }
+          }
+        },
+        "deprecated": false
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "sec0": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "Authorization",
+        "x-bearer-format": "bearer",
+        "x-default": ""
+      }
+    }
+  },
+  "security": [
+    {
+      "sec0": []
+    }
+  ]
+}

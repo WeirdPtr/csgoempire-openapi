@@ -1,0 +1,1 @@
+pub const API_REFERENCE_DOCUMENT_URL : &str = "https://docs.csgoempire.com/llms.txt";

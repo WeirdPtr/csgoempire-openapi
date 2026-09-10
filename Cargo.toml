@@ -1,0 +1,17 @@
+[package]
+name = "csgoempire-openapi"
+version = "0.1.0"
+description = "CSGOEmpire OpenApi schema generator"
+edition = "2024"
+license = "MIT OR Apache-2.0"
+publish = false
+
+[dependencies]
+env_logger = "0.11.11"
+log = "0.4.34"
+pulldown-cmark = "0.13.4"
+reqwest = { version = "0.13.4", features = ["blocking", "rustls", "query"] }
+serde = { version = "1.0.229", features = ["derive"] }
+serde_json = { version = "1.0.151", features = ["preserve_order"] }
+utoipa = "5.5.0"
+
