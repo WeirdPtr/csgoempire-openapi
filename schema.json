@@ -2163,8 +2163,8 @@
         "type": "apiKey",
         "in": "header",
         "name": "Authorization",
-        "x-bearer-format": "bearer",
-        "x-default": ""
+        "x-default": "",
+        "x-bearer-format": "bearer"
       }
     }
   },
